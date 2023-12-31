@@ -1,0 +1,14 @@
+things to work on:
+Missing values:
+Lot Frontage - can either fill with mean, median or use MICE
+Electrical - fill with the most common
+BsmtFinType2 - estimate based on the mean of the same type in BsmtFinType1, fill as Rec since mean and median is similar to the area value
+BsmtExposure - fill in "No" for id 949
+MasVnrArea fill 0 if MasVnrType is NA
+MasVnrType fill from exterior1st, exterior2nd, exterqual, ExterCond and see which is closer to the mean
+
+Completed checks:
+fireplace and fireplacequ - if quality is na, fireplaces is zero
+check BsmtFinSF1 and BsmtFinSF2 if no basements have values - BsmtFinType2 needs to fill 1 missing value
+BsmtExposure needs to fill in missing value - to put as "No" as it is the most common, if there is supposed to be a basement (1 count)
+MasVnrArea and MasVnrType needs to fill in some missing values
