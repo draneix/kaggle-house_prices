@@ -1,16 +1,22 @@
-
 import pandas as pd
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import SimpleImputer, IterativeImputer
 from sklearn.preprocessing import OrdinalEncoder
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
+from sklearn.svm import SVR
 from sklearn.ensemble import HistGradientBoostingClassifier
 
 from config import list_cols_with_na
 
 
 def read_data():
+    """Read train and test data
+    Clean train and test data
+    Impute train and test data by combining them
+    TODO: Clean up or loop imputation portion
+
+    Returns:
+        df_complete_temp_final (dataframe): combined train and test data after imputation
+    """
 
     # Reading data
     # Train
@@ -22,28 +28,42 @@ def read_data():
     df_test = pd.read_csv("./data/test.csv")
 
     # Rule based data cleaning
-    clean_data(df_train)
-    clean_data(df_test)
+    df_train = clean_data(df_train)
+    df_test = clean_data(df_test)
 
-    # Imputation of categorical variables
-    df_combine_temp = pd.concat([df_train, df_test]).drop(columns=["Id", "SalePrice"])
-    df_combine_temp.to_csv("check.csv", index=False)
-    # Impute categorical columns with their most frequent values
-    # TODO: Impute categorical variables using tree algorithms
-    temp_df = df_combine_temp.isna().sum()
+    df_combine_temp = pd.concat([df_train, df_test]).drop(columns=["Id", "SalePrice"]).reset_index(drop=True)
+
+    # Get categorical columns which will be ordinally encoded
     list_cat_cols = [i for i in df_combine_temp.columns if df_combine_temp[i].dtype == "O"]
-    cat_cols_to_impute = list(temp_df.loc[temp_df > 0].index)
-    cat_cols_to_impute.remove("LotFrontage")
+
+    # Drop lotfrontage first, impute categorical variables first
+    # Imputation of categorical variables using HistGradientBoostingClassifier, based on LightGBM LightGBM
     df_combine_temp_2 = df_combine_temp.drop(columns="LotFrontage")
-    ct_cat = ColumnTransformer([("ordinal", OrdinalEncoder(), list_cat_cols)])
-    pipe_cat = Pipeline([("preprocess", ct_cat),
-                         ("tree_impute", IterativeImputer(estimator=HistGradientBoostingClassifier()))])
-    df_combine_temp_2 = pipe_cat.fit_transform(df_combine_temp_2)
+    ord_encoder = OrdinalEncoder()
+    tree_impute = IterativeImputer(estimator=HistGradientBoostingClassifier(), skip_complete=True)
+    df_combine_temp_2[list_cat_cols] = ord_encoder.fit_transform(df_combine_temp_2[list_cat_cols])
+    df_combine_temp_2 = tree_impute.fit_transform(df_combine_temp_2)
 
-    # # Impute LotFrontage with SVR
-    # df_combine_temp_2.loc[:, "LotFrontage"] = df_combine_temp["LotFrontage"]
+    # Get back dataframe and insert LotFrontage to be imputed next
+    df_combine_temp_2 = pd.DataFrame((df_combine_temp_2), columns=tree_impute.get_feature_names_out())
+    df_combine_temp_2[list_cat_cols] = ord_encoder.inverse_transform(df_combine_temp_2[list_cat_cols])
+    df_combine_temp_2.loc[:, "LotFrontage"] = df_combine_temp["LotFrontage"]
 
-    return df_combine_temp_2
+    # Impute comtinuous columns using SVR
+    ord_encoder = OrdinalEncoder()
+    cont_imp = IterativeImputer(estimator=SVR(), skip_complete=True)
+    df_combine_temp_2[list_cat_cols] = ord_encoder.fit_transform(df_combine_temp_2[list_cat_cols])
+    df_combine_temp_2 = cont_imp.fit_transform(df_combine_temp_2)
+
+    # Get final dataset
+    df_combine_temp_final = pd.DataFrame(df_combine_temp_2, columns=cont_imp.get_feature_names_out())
+    df_combine_temp_final[list_cat_cols] = ord_encoder.inverse_transform(df_combine_temp_final[list_cat_cols])
+
+    # Get train and test dataset based on length
+    df_train_final = df_combine_temp_final.iloc[:len(df_train)]
+    df_test_final = df_combine_temp_final.iloc[len(df_train):]
+
+    return df_train_final, df_test_final
 
 
 def clean_data(df):
@@ -74,6 +94,6 @@ def clean_data(df):
     df = df.loc[~df["GarageYrBlt"].isna()]
 
     # Fill missing values with "empty" to represent missing values that have meaning
-    df[list_cols_with_na].fillna("empty", inplace=True)
+    df.loc[:, list_cols_with_na] = df[list_cols_with_na].fillna("empty")
 
-    return
+    return df

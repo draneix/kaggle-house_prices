@@ -6,10 +6,5 @@ This project deals with the house price prediction using the dataset obtained fr
 ## Missing values computation
 
 There were some columns with missing values. Imputation was performed on a few columns where the missing value does not have any meaning
-- LotFrontage - imputed through mean, median or MICE (TBC)
-- Electrical - imputed through the most common category
-- BsmtFinType2 - imputed through similar value in BsmtFinType1 and BsmtFinSF1
-- BsmtExposure - imputed as "No"
-- MasVnrArea - imputed as 0 if MasVnrType is NA
-- MasVnrType - imputed through similar values after grouping for exterior1st, exterior2nd, exterqual, ExterCond
-
+As there were more categorical variables that require imputations, categorical variables were imputed first. This was performed using a tree-based algorithm (HistGradientBoostingClassifier)
+Following which, the continuous variable(s) were imputed using support vector regression
