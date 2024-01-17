@@ -16,7 +16,7 @@ class MLP(nn.Module):
         self.output1 = nn.Linear(100, 1)
 
     def forward(self, x):
-        x = F.relu(self.input1(x))
+        x = F.tanh(self.input1(x))
         x = self.dropout1(x)
         x = F.relu(self.hidden1(x))
         return self.output1(x)

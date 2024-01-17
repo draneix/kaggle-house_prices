@@ -1,14 +1,157 @@
-things to work on:
-Missing values:
-Lot Frontage - can either fill with mean, median or use MICE
-Electrical - fill with the most common
-BsmtFinType2 - estimate based on the mean of the same type in BsmtFinType1, fill as Rec since mean and median is similar to the area value
-BsmtExposure - fill in "No" for id 949
-MasVnrArea fill 0 if MasVnrType is NA
-MasVnrType fill from exterior1st, exterior2nd, exterqual, ExterCond and see which is closer to the mean
-
-Completed checks:
-fireplace and fireplacequ - if quality is na, fireplaces is zero
-check BsmtFinSF1 and BsmtFinSF2 if no basements have values - BsmtFinType2 needs to fill 1 missing value
-BsmtExposure needs to fill in missing value - to put as "No" as it is the most common, if there is supposed to be a basement (1 count)
-MasVnrArea and MasVnrType needs to fill in some missing values
+train: 20167.73046875
+valid: 29802.337890625
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=250, bias=True)
+  (dropout1): Dropout(p=0.3, inplace=False)
+  tanh
+  (hidden1): Linear(in_features=250, out_features=100, bias=True)
+  relu
+  (output1): Linear(in_features=100, out_features=1, bias=True)
+)
+train: 79572.3984375
+valid: 78520.3359375
+Epochs 1000: MLP(
+  (input1): Linear(in_features=297, out_features=250, bias=True)
+  tanh
+  (dropout1): Dropout(p=0.3, inplace=False)
+  (hidden1): Linear(in_features=250, out_features=100, bias=True)
+  tanh
+  (output1): Linear(in_features=100, out_features=1, bias=True)
+)
+train: 10930.8447265625
+valid: 34422.88671875
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=200, bias=True)
+  (dropout1): Dropout(p=0.3, inplace=False)
+  (hidden1): Linear(in_features=200, out_features=50, bias=True)
+  (hidden2): Linear(in_features=50, out_features=12, bias=True)
+  (output1): Linear(in_features=12, out_features=1, bias=True)
+)
+train: 25861.71484375
+valid: 41195.23828125
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=200, bias=True)
+  (dropout1): Dropout(p=0.3, inplace=False)
+  (hidden1): Linear(in_features=200, out_features=50, bias=True)
+  (hidden2): Linear(in_features=50, out_features=12, bias=True)
+  (output1): Linear(in_features=12, out_features=1, bias=True)
+)
+train: 13185.3662109375
+valid: 33754.09375
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=200, bias=True)
+  (dropout1): Dropout(p=0.3, inplace=False)
+  (hidden1): Linear(in_features=200, out_features=100, bias=True)
+  (hidden2): Linear(in_features=100, out_features=12, bias=True)
+  (output1): Linear(in_features=12, out_features=1, bias=True)
+)
+train: 13185.3662109375
+valid: 33754.09375
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=200, bias=True)
+  (dropout1): Dropout(p=0.3, inplace=False)
+  (hidden1): Linear(in_features=200, out_features=200, bias=True)
+  (hidden2): Linear(in_features=200, out_features=100, bias=True)
+  (hidden3): Linear(in_features=100, out_features=50, bias=True)
+  (output1): Linear(in_features=50, out_features=1, bias=True)
+)
+train: 12709.6220703125
+valid: 33972.63671875
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=200, bias=True)
+  (dropout1): Dropout(p=0.3, inplace=False)
+  (hidden1): Linear(in_features=200, out_features=200, bias=True)
+  (hidden2): Linear(in_features=200, out_features=100, bias=True)
+  (hidden3): Linear(in_features=100, out_features=50, bias=True)
+  (output1): Linear(in_features=50, out_features=1, bias=True)
+)
+train: 49829.609375
+valid: 55558.671875
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=600, bias=True)
+  (dropout1): Dropout(p=0.3, inplace=False)
+  (hidden1): Linear(in_features=600, out_features=300, bias=True)
+  (hidden2): Linear(in_features=300, out_features=450, bias=True)
+  (hidden3): Linear(in_features=450, out_features=200, bias=True)
+  (output1): Linear(in_features=200, out_features=1, bias=True)
+)
+train: 10512.8876953125
+valid: 32642.3515625
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=600, bias=True)
+  (dropout1): Dropout(p=0.3, inplace=False)
+  (hidden1): Linear(in_features=600, out_features=300, bias=True)
+  (output1): Linear(in_features=300, out_features=1, bias=True)
+)
+train: 9854.7392578125
+valid: 33016.58203125
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=400, bias=True)
+  (dropout1): Dropout(p=0.3, inplace=False)
+  (hidden1): Linear(in_features=400, out_features=300, bias=True)
+  (output1): Linear(in_features=300, out_features=1, bias=True)
+)
+train: 42194.72265625
+valid: 41517.09765625
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=250, bias=True)
+  (dropout1): Dropout(p=0.3, inplace=False)
+  (hidden1): Linear(in_features=250, out_features=100, bias=True)
+  (output1): Linear(in_features=100, out_features=1, bias=True)
+)
+train: 12350.7705078125
+valid: 31178.734375
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=250, bias=True)
+  (dropout1): Dropout(p=0.4, inplace=False)
+  (hidden1): Linear(in_features=250, out_features=100, bias=True)
+  (output1): Linear(in_features=100, out_features=1, bias=True)
+)
+train: 13814.861328125
+valid: 32136.337890625
+Epochs 100: MLP(
+  (input1): Linear(in_features=297, out_features=250, bias=True)
+  (dropout1): Dropout(p=0.4, inplace=False)
+  (hidden1): Linear(in_features=250, out_features=100, bias=True)
+  (output1): Linear(in_features=100, out_features=1, bias=True)
+)
+train: 30382.509765625
+valid: 33027.171875
+Epochs 10: MLP(
+  (input1): Linear(in_features=297, out_features=250, bias=True)
+  (dropout1): Dropout(p=0.4, inplace=False)
+  (hidden1): Linear(in_features=250, out_features=100, bias=True)
+  (output1): Linear(in_features=100, out_features=1, bias=True)
+)
+train: 22256.68359375
+valid: 32350.728515625
+Epochs 50: MLP(
+  (input1): Linear(in_features=297, out_features=150, bias=True)
+  (dropout1): Dropout(p=0.4, inplace=False)
+  (hidden1): Linear(in_features=150, out_features=100, bias=True)
+  (output1): Linear(in_features=100, out_features=1, bias=True)
+)
+train: 24129.05078125
+valid: 32787.890625
+Epochs 50: MLP(
+  (input1): Linear(in_features=297, out_features=100, bias=True)
+  (dropout1): Dropout(p=0.4, inplace=False)
+  (hidden1): Linear(in_features=100, out_features=100, bias=True)
+  (output1): Linear(in_features=100, out_features=1, bias=True)
+)
+train: 25723.53125
+valid: 32958.67578125
+Epochs 50: MLP(
+  (input1): Linear(in_features=297, out_features=100, bias=True)
+  (dropout1): Dropout(p=0.4, inplace=False)
+  (hidden1): Linear(in_features=100, out_features=50, bias=True)
+  (output1): Linear(in_features=50, out_features=1, bias=True)
+)
+train: 25901.1171875
+valid: 33616.87109375
+Epochs 50: MLP(
+  (input1): Linear(in_features=297, out_features=100, bias=True)
+  (dropout1): Dropout(p=0.4, inplace=False)
+  (hidden1): Linear(in_features=100, out_features=50, bias=True)
+  (output1): Linear(in_features=50, out_features=1, bias=True)
+)
