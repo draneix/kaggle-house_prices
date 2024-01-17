@@ -31,7 +31,8 @@ def read_data():
     df_train = clean_data(df_train)
     df_test = clean_data(df_test)
 
-    df_combine_temp = pd.concat([df_train, df_test]).drop(columns=["Id", "SalePrice"]).reset_index(drop=True)
+    df_combine = pd.concat([df_train, df_test]).reset_index(drop=True)
+    df_combine_temp = df_combine.drop(columns=["Id", "SalePrice"])
 
     # Get categorical columns which will be ordinally encoded
     list_cat_cols = [i for i in df_combine_temp.columns if df_combine_temp[i].dtype == "O"]
@@ -59,9 +60,13 @@ def read_data():
     df_combine_temp_final = pd.DataFrame(df_combine_temp_2, columns=cont_imp.get_feature_names_out())
     df_combine_temp_final[list_cat_cols] = ord_encoder.inverse_transform(df_combine_temp_final[list_cat_cols])
 
+    # Add back SalePrice
+    df_combine_temp_final.loc[:, "SalePrice"] = df_combine["SalePrice"]
+
     # Get train and test dataset based on length
     df_train_final = df_combine_temp_final.iloc[:len(df_train)]
     df_test_final = df_combine_temp_final.iloc[len(df_train):]
+    df_test_final.drop(columns="SalePrice", inplace=True)
 
     return df_train_final, df_test_final
 
@@ -85,13 +90,12 @@ def clean_data(df):
     df.loc[df["MasVnrType"].isna(), "MasVnrArea"] = 0
 
     # If GarageType is NA, GarageCars and GarageArea must be zero
-    # Also put garageyearblt as 0
     df.loc[df["GarageType"].isna(), "GarageCars"] = 0
     df.loc[df["GarageType"].isna(), "GarageArea"] = 0
+    # Also put garageyearblt as 0
     df.loc[df["GarageType"].isna(), "GarageYrBlt"] = 0
-
-    # Drop 2 rows of data where GarageYrBlt is hard to determine
-    df = df.loc[~df["GarageYrBlt"].isna()]
+    # Set GarageYrBlt as mean
+    df.loc[df["GarageYrBlt"].isna(), "GarageYrBlt"] = df.loc[df["GarageYrBlt"] != 0]["GarageYrBlt"].mean()
 
     # Fill missing values with "empty" to represent missing values that have meaning
     df.loc[:, list_cols_with_na] = df[list_cols_with_na].fillna("empty")
