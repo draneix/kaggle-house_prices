@@ -1,3 +1,7 @@
+import random
+import numpy as np
+import torch
+
 import pandas as pd
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import SimpleImputer, IterativeImputer
@@ -21,6 +25,7 @@ def read_data():
     # Reading data
     # Train
     df_train = pd.read_csv("./data/train.csv")
+    df_train.loc[:, "SalePrice"] = np.log(df_train["SalePrice"])
     # Test
     # Note that test set has no SalePrice, which is what you are going to predict
     # Therefore, you need to get your own "test" set from the train data to evaluate your model
@@ -101,3 +106,11 @@ def clean_data(df):
     df.loc[:, list_cols_with_na] = df[list_cols_with_na].fillna("empty")
 
     return df
+
+
+def seed_everything(SEED_NUM=12):
+
+    np.random.seed(SEED_NUM)
+    random.seed(SEED_NUM)
+    torch.manual_seed(SEED_NUM)
+    return
