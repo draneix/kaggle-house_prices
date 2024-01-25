@@ -13,11 +13,11 @@ Following which, the continuous variable(s) were imputed using support vector re
 A multilayer perceptron is used to model the sale price of the flat.
 The loss function used for RMSE.
 Hyperparameter tuning was performed using Optuna:
-    - Learning rate - [1e-4, 1e-2]
-    - Batch size - [2 ** 4, 2 ** 6]
-    - Optimiser - [Adam, SGD]
-    - Number of layer - [1, 4]
-    - Number of neurons in each layer - [1, 3000]
-    - Activation function - [ReLU, Tanh, Sigmoid]
-    - Dropout probability - [0.1, 0.5]
-    - Additional dropout or batch norm layers - [True, False]
+- Learning rate - [1e-4, 1e-2]
+- Batch size - [2 ** 4, 2 ** 6]
+- Optimiser - [Adam, SGD]
+- Number of layer - [1, 4]
+- Number of neurons in each layer - [1, 3000]
+- Activation function - [ReLU, Tanh, Sigmoid]
+- Dropout probability - [0.1, 0.5]
+- Additional dropout or batch norm layers - [True, False]
