@@ -8,7 +8,7 @@ import optuna
 
 
 # ---------- Initialisation of fixed hyperparameters
-num_epochs = 700
+num_epochs = 1000
 criterion = nn.MSELoss()
 
 if torch.cuda.is_available():
@@ -40,7 +40,7 @@ class EarlyStopper:
 
 def define_model(trial, n_features):
     # Number of layers
-    n_layers = trial.suggest_int("n_layers", 1, 3)
+    n_layers = trial.suggest_int("n_layers", 1, 4)
     layers = []
     n_outputs = None
 
@@ -51,7 +51,7 @@ def define_model(trial, n_features):
         else:
             n_inputs = n_outputs
         # Get number of nodes for the next layer
-        n_outputs = trial.suggest_int(f"n_outputs_{i}", 1, 1500)
+        n_outputs = trial.suggest_int(f"n_outputs_{i}", 1, 3000)
         layers.append(nn.Linear(n_inputs, n_outputs))
         # Activation layer
         activation_func_name = trial.suggest_categorical(f"act_func_{i}", ["ReLU", "Tanh", "Sigmoid"])
@@ -76,9 +76,9 @@ def objective(trial, tensor_train, x_valid, y_valid):
     model = define_model(trial, x_valid.shape[1]).to(device)
 
     # Model initialisation
-    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-3)
-    batch_size = trial.suggest_categorical("batch_size", [2 ** 2, 2 ** 3, 2 ** 4])
-    optimiser_name = trial.suggest_categorical("optimiser_name", ["Adam"])
+    learning_rate = trial.suggest_float("learning_rate", 1e-4, 1e-2)
+    batch_size = trial.suggest_categorical("batch_size", [2 ** 4, 2 ** 5, 2 ** 6])
+    optimiser_name = trial.suggest_categorical("optimiser_name", ["Adam", "SGD"])
     optimiser = getattr(optim, optimiser_name)(model.parameters(), lr=learning_rate)
     loader_train = DataLoader(tensor_train, shuffle=True, batch_size=batch_size)
 
@@ -109,7 +109,7 @@ def objective(trial, tensor_train, x_valid, y_valid):
             raise optuna.exceptions.TrialPruned()
 
         # Early stopping
-        early_stopper = EarlyStopper(patience=10, min_delta=.01)
+        early_stopper = EarlyStopper(patience=10, min_delta=0.05)
         if early_stopper.early_stop(loss_valid):
             break
 
